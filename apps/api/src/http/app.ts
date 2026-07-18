@@ -1,0 +1,16 @@
+import cors from "cors";
+import express from "express";
+import { pinoHttp } from "pino-http";
+import { healthRouter } from "./routes/health.routes.js";
+
+export function createApp() {
+  const app = express();
+
+  app.use(pinoHttp());
+  app.use(cors());
+  app.use(express.json());
+
+  app.use("/api", healthRouter);
+
+  return app;
+}
