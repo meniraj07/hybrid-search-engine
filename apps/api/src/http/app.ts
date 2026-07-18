@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { pinoHttp } from "pino-http";
+import { databaseHealthRouter } from "./routes/database-health.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 
 export function createApp() {
@@ -11,6 +12,7 @@ export function createApp() {
   app.use(express.json());
 
   app.use("/api", healthRouter);
+  app.use("/api", databaseHealthRouter);
 
   return app;
 }

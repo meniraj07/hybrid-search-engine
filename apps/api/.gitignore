@@ -7,3 +7,4 @@ build/
 coverage/
 .vscode/
 src/config/env.ts
+docker-compose.yml
