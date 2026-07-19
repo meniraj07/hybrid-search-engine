@@ -4,6 +4,8 @@ import { pinoHttp } from "pino-http";
 import { databaseHealthRouter } from "./routes/database-health.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 import { searchRouter } from "./routes/search.routes.js";
+import { errorHandler } from "./middleware/error-handler.middleware.js";
+import { notFoundHandler } from "./middleware/not-found.middleware.js";
 
 export function createApp() {
   const app = express();
@@ -15,5 +17,12 @@ export function createApp() {
   app.use("/api", healthRouter);
   app.use("/api", databaseHealthRouter);
   app.use("/api", searchRouter);
+
+
+
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
+
   return app;
 }
