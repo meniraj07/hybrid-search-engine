@@ -7,6 +7,7 @@ import { searchRouter } from "./routes/search.routes.js";
 import { errorHandler } from "./middleware/error-handler.middleware.js";
 import { notFoundHandler } from "./middleware/not-found.middleware.js";
 import { semanticSearchRouter } from "./routes/semantic-search.routes.js";
+import { hybridSearchRouter } from "./routes/hybrid-search.routes.js";
 
 export function createApp() {
   const app = express();
@@ -19,7 +20,7 @@ export function createApp() {
   app.use("/api", databaseHealthRouter);
   app.use("/api", searchRouter);
   app.use("/api", semanticSearchRouter);
-
+  app.use("/api", hybridSearchRouter);
 
 
   app.use(notFoundHandler);
