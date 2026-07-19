@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "typecheck": "tsc --noEmit",
-    "import:arxiv": "tsx src/scripts/import-arxiv.ts"
+    "import:arxiv": "tsx src/scripts/import-arxiv.ts",
+    "embeddings:demo": "tsx src/scripts/embedding-demo.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
