@@ -12,7 +12,6 @@ const searchQuerySchema = z.object({
 searchRouter.get("/search", async (req, res, next) => {
   try {
     const query = searchQuerySchema.parse(req.query);
-    const likePattern = `%${query.q}%`;
 
     const result = await postgresPool.query(
       `
@@ -25,14 +24,15 @@ searchRouter.get("/search", async (req, res, next) => {
         category,
         published_at
       FROM documents
-      WHERE title ILIKE $1 OR abstract ILIKE $1
+      WHERE search_vector @@ websearch_to_tsquery('english', $1)
       ORDER BY published_at DESC NULLS LAST
       LIMIT $2
       `,
-      [likePattern, query.limit],
+      [query.q, query.limit],
     );
     res.status(200).json({
       query: query.q,
+      searchMode: "full-text",
       count: result.rowCount,
       results: result.rows,
     });
