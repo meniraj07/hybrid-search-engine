@@ -15,17 +15,28 @@ searchRouter.get("/search", async (req, res, next) => {
 
     const result = await postgresPool.query(
       `
+      WITH search_input AS (
+        SELECT websearch_to_tsquery('english', $1) AS tsquery
+      )
       SELECT
-        id,
-        external_id,
-        title,
-        abstract,
-        authors,
-        category,
-        published_at
+        documents.id,
+        documents.external_id,
+        documents.title,
+        documents.abstract,
+        documents.authors,
+        documents.category,
+        documents.published_at,
+        ts_rank_cd(
+          documents.search_vector,
+          search_input.tsquery,
+          32
+        ) AS keyword_score
       FROM documents
-      WHERE search_vector @@ websearch_to_tsquery('english', $1)
-      ORDER BY published_at DESC NULLS LAST
+      CROSS JOIN search_input
+      WHERE documents.search_vector @@ search_input.tsquery
+      ORDER BY
+        keyword_score DESC,
+        documents.published_at DESC NULLS LAST
       LIMIT $2
       `,
       [query.q, query.limit],
