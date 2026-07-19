@@ -1,0 +1,8 @@
+ALTER TABLE documents
+ADD COLUMN IF NOT EXISTS embedding vector(384);
+
+ALTER TABLE documents
+ADD COLUMN IF NOT EXISTS embedding_model TEXT;
+
+ALTER TABLE documents
+ADD COLUMN IF NOT EXISTS embedded_at TIMESTAMPTZ;

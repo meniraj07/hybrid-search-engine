@@ -1,5 +1,6 @@
 import {
   EMBEDDING_DIMENSIONS,
+  EMBEDDING_MODEL_NAME,
   generateEmbedding,
 } from "../embeddings/embeddings.service.js";
 
