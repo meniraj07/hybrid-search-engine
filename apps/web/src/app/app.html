@@ -1,0 +1,141 @@
+<main class="page-shell">
+  <section class="hero">
+    <p class="eyebrow">HYBRID SEARCH ENGINE</p>
+    <h1>Search Computer Science Research</h1>
+    <p class="hero-description">
+      Combines keyword relevance and semantic meaning with Reciprocal Rank Fusion.
+    </p>
+  </section>
+
+  <section class="search-panel">
+    <form (ngSubmit)="search()" class="search-form">
+      <label for="query">Search papers</label>
+
+      <div class="search-row">
+        <input
+          id="query"
+          name="query"
+          type="search"
+          [(ngModel)]="query"
+          placeholder="Example: computer vision methods"
+          autocomplete="off"
+        />
+
+        <button type="submit" [disabled]="isLoading">
+          {{ isLoading ? "Searching..." : "Search" }}
+        </button>
+      </div>
+
+      <div class="filter-row">
+        <label for="category">Category</label>
+
+        <select
+          id="category"
+          name="category"
+          [(ngModel)]="selectedCategory"
+        >
+          @for (category of categories; track category.value) {
+            <option [value]="category.value">
+              {{ category.label }}
+            </option>
+          }
+        </select>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="clearSearch()"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </section>
+
+  @if (errorMessage) {
+    <p class="message error-message">{{ errorMessage }}</p>
+  }
+
+  @if (isLoading) {
+    <p class="message">Finding keyword and semantic matches...</p>
+  }
+
+  @if (response && !isLoading) {
+    <section class="result-summary">
+      <p>
+        Showing {{ response.results.length }} result(s) from
+        {{ response.pagination.totalCandidates }} fused candidates.
+      </p>
+      <p class="method-label">
+        Ranking: Reciprocal Rank Fusion, k = {{ response.rrf.k }}
+      </p>
+    </section>
+
+    @if (response.results.length === 0) {
+      <p class="message">No matching papers were found. Try a different query.</p>
+    }
+
+    <section class="results-list">
+      @for (result of response.results; track result.id) {
+        <article class="result-card">
+          <div class="result-header">
+            <span class="category-badge">{{ result.category }}</span>
+            <span class="score-badge">
+              RRF {{ formatScore(result.rrfScore) }}
+            </span>
+          </div>
+
+          <h2 [innerHTML]="result.title | highlight: query"></h2>
+
+          <p
+            class="abstract"
+            [innerHTML]="result.abstract | highlight: query"
+          ></p>
+
+          <div class="metadata">
+            <span>{{ result.authors.join(", ") }}</span>
+
+            @if (result.published_at) {
+              <span>Published {{ result.published_at }}</span>
+            }
+          </div>
+
+          <div class="rank-details">
+            <span>
+              Keyword rank:
+              {{ result.keywordRank ?? "not in keyword candidates" }}
+            </span>
+
+            <span>
+              Semantic rank:
+              {{ result.semanticRank ?? "not in semantic candidates" }}
+            </span>
+          </div>
+        </article>
+      }
+    </section>
+
+    <nav class="pagination" aria-label="Search result pages">
+      <button
+        type="button"
+        [disabled]="!response.pagination.hasPreviousPage || isLoading"
+        (click)="search(response.pagination.page - 1)"
+      >
+        Previous
+      </button>
+
+      <span>
+        Page {{ response.pagination.page }} of
+        {{ response.pagination.totalPages || 1 }}
+      </span>
+
+      <button
+        type="button"
+        [disabled]="!response.pagination.hasNextPage || isLoading"
+        (click)="search(response.pagination.page + 1)"
+      >
+        Next
+      </button>
+    </nav>
+  }
+</main>
