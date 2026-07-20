@@ -1,10 +1,1 @@
 node_modules/
-dist/
-build/
-.env
-.env.*
-*.log
-coverage/
-.vscode/
-src/config/env.ts
-docker-compose.yml
