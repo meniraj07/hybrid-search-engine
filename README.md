@@ -47,6 +47,8 @@ flowchart LR
 5. Reciprocal Rank Fusion combines both ranked lists.
 6. Angular displays the final ranked results.
 
+![Hybrid search results](docs/images/search-results.png)
+
 ## Tech Stack
 
 | Layer | Technology |
